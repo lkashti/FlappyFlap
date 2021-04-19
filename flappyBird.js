@@ -52,8 +52,7 @@ function moveUp() {
 // audio icon press
 cvs.addEventListener("click", (e) => {
   if (e.x > 1157 && e.x < 1184 && e.y > 33 && e.y < 56) {
-    soundOn =!soundOn;
-    console.log("sound change");
+    soundOn = !soundOn;
   }
 });
 
