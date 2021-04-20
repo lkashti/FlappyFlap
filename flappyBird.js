@@ -51,7 +51,13 @@ function moveUp() {
 }
 // audio icon press
 cvs.addEventListener("click", (e) => {
-  if (e.x > 1157 && e.x < 1184 && e.y > 33 && e.y < 56) {
+  console.log(e);
+  console.log(e.x-cvs.offsetLeft);
+  console.log(e.y-cvs.offsetTop);
+  var offsetX = e.x - cvs.offsetLeft;
+  var offsetY = e.y - cvs.offsetTop;
+  if (offsetX > 21 && offsetX < 35 && offsetY > 26 && offsetY < 45) {
+    console.log("sound state change");
     soundOn = !soundOn;
   }
 });
@@ -93,7 +99,7 @@ function draw() {
           bY + bird.height >= pipe[i].y + constant)) ||
       bY + bird.height >= cvs.height - fg.height
     ) {
-      location.reload(); // reload the page
+      // location.reload(); // reload the page
     }
 
     if (pipe[i].x == 5) {
