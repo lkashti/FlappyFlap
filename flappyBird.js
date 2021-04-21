@@ -12,6 +12,7 @@ var soundOnIcon = new Image();
 var soundOffIcon = new Image();
 var gameLogo = new Image();
 var startButton = new Image();
+var gameOverImg = new Image();
 
 bird.src = "images/bird.png";
 bg.src = "images/bg.png";
@@ -22,7 +23,7 @@ soundOnIcon.src = "images/audioOn.png";
 soundOffIcon.src = "images/audioOff.png";
 gameLogo.src = "images/flappyBirdLogo.png";
 startButton.src = "images/startButton.png";
-
+gameOverImg.src = "images/gameOver.png"
 // some variables
 
 var gap = 125;
@@ -31,7 +32,7 @@ var constant;
 var bX = 10;
 var bY = 150;
 
-var gravity = 0.8;
+var gravity = 1.5;
 
 // audio files
 
@@ -42,7 +43,7 @@ fly.src = "sounds/fly.mp3";
 scor.src = "sounds/score.mp3";
 
 // game states and init
-var gameStates = { START: 1, PLAYING: 2, gameOver: 3 };
+var gameStates = { START: 1, PLAYING: 2, GAMEOVER: 3 };
 var gameState = gameStates.START;
 
 var score = 0;
@@ -62,21 +63,21 @@ cvs.addEventListener("click", (e) => {
   var offsetX = e.x - cvs.offsetLeft;
   var offsetY = e.y - cvs.offsetTop;
   if (offsetX > 21 && offsetX < 35 && offsetY > 26 && offsetY < 45) {
-    console.log("sound state change");
     soundOn = !soundOn;
   }
 });
+
 cvs.addEventListener("click", (e) => {
   var offsetX = e.x - cvs.offsetLeft;
   var offsetY = e.y - cvs.offsetTop;
   if (
-    offsetX > startButton.x &&
-    offsetX < 0 + startButton.width &&
-    offsetY > startButton.y &&
-    offsetY < 300 + startButton.height
-  ) {
-    console.log("start pressed");
-    soundOn = !soundOn;
+    offsetX > 43 &&
+    offsetX < 43 + startButton.width &&
+    offsetY > 302 &&
+    offsetY < 302 + startButton.height
+    ) {
+    gameState = gameStates.PLAYING;
+    soundOn = true;
   }
 });
 
@@ -108,7 +109,7 @@ function draw() {
         ctx.drawImage(pipeNorth, pipe[i].x, pipe[i].y);
         ctx.drawImage(pipeSouth, pipe[i].x, pipe[i].y + constant);
 
-        pipe[i].x -= 0.5;
+        pipe[i].x -= 1;
 
         if (pipe[i].x == 125) {
           pipe.push({
@@ -126,7 +127,8 @@ function draw() {
               bY + bird.height >= pipe[i].y + constant)) ||
           bY + bird.height >= cvs.height - fg.height
         ) {
-          // location.reload(); // reload the page
+          //game over
+          gameState = gameStates.GAMEOVER;
         }
 
         if (pipe[i].x == 5) {
@@ -151,6 +153,14 @@ function draw() {
       } else {
         ctx.drawImage(soundOffIcon, 19, 21);
       }
+      break;
+    case gameStates.GAMEOVER:
+      ctx.fillStyle = "grey";
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+      ctx.drawImage(gameOverImg, 50, 170);
+      ctx.fillStyle = "#000";
+      ctx.font = "40px Verdana";
+      ctx.fillText("Score : " + score, 50, cvs.height - 50);
       break;
     default:
       console.log("defaulted");
