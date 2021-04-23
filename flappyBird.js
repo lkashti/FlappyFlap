@@ -23,16 +23,16 @@ soundOnIcon.src = "images/audioOn.png";
 soundOffIcon.src = "images/audioOff.png";
 gameLogo.src = "images/flappyBirdLogo.png";
 startButton.src = "images/startButton.png";
-gameOverImg.src = "images/gameOver.png"
+gameOverImg.src = "images/gameOver.png";
 // some variables
 
-var gap = 125;
+var gap = 140;
 var constant;
 
 var bX = 10;
 var bY = 150;
 
-var gravity = 1.5;
+var gravity = 0.8;
 
 // audio files
 
@@ -43,43 +43,50 @@ fly.src = "sounds/fly.mp3";
 scor.src = "sounds/score.mp3";
 
 // game states and init
-var gameStates = { START: 1, PLAYING: 2, GAMEOVER: 3 };
+var gameStates = { START: 1, PLAYING: 2, GAMEOVER: 3 ,CURRENT:1};
 var gameState = gameStates.START;
 
 var score = 0;
 var soundOn = false;
 // EVENTS
+
 // on key down
 
 function moveUp() {
   bY -= 40;
+  gravity = 0.8;
   if (soundOn) {
     fly.play();
   }
 }
-// audio icon press
+// audio icon click
 
-cvs.addEventListener("click", (e) => {
+cvs.addEventListener("click", (e) => enableDisableSound(e));
+function enableDisableSound(e) {
   var offsetX = e.x - cvs.offsetLeft;
   var offsetY = e.y - cvs.offsetTop;
   if (offsetX > 21 && offsetX < 35 && offsetY > 26 && offsetY < 45) {
     soundOn = !soundOn;
   }
-});
-
-cvs.addEventListener("click", (e) => {
-  var offsetX = e.x - cvs.offsetLeft;
-  var offsetY = e.y - cvs.offsetTop;
-  if (
-    offsetX > 43 &&
-    offsetX < 43 + startButton.width &&
-    offsetY > 302 &&
-    offsetY < 302 + startButton.height
+}
+//start button click
+cvs.addEventListener("click", (e) => handleStarBtnClick(e));
+function handleStarBtnClick(e) {
+  if (gameStates.CURRENT==gameStates.START) {
+    var offsetX = e.x - cvs.offsetLeft;
+    var offsetY = e.y - cvs.offsetTop;
+    if (
+      offsetX > 43 &&
+      offsetX < 43 + startButton.width &&
+      offsetY > 302 &&
+      offsetY < 302 + startButton.height
     ) {
-    gameState = gameStates.PLAYING;
-    soundOn = true;
+      console.log("start");
+      gameState = gameStates.PLAYING;
+      soundOn = true;
+    }
   }
-});
+}
 
 // pipe coordinates
 
@@ -95,13 +102,15 @@ pipe[0] = {
 function draw() {
   switch (gameState) {
     case gameStates.START:
+      gameStates.CURRENT=gameStates.START;
       ctx.fillStyle = "cyan";
       ctx.fillRect(0, 0, cvs.width, cvs.height);
-      ctx.drawImage(gameLogo, 60, 50);
+      ctx.drawImage(bg, 0, 0);
       ctx.drawImage(startButton, 40, 300);
 
       break;
     case gameStates.PLAYING:
+      gameStates.CURRENT=gameStates.PLAYING;
       ctx.drawImage(bg, 0, 0);
 
       for (var i = 0; i < pipe.length; i++) {
@@ -111,7 +120,7 @@ function draw() {
 
         pipe[i].x -= 1;
 
-        if (pipe[i].x == 125) {
+        if (pipe[i].x == 50) {
           pipe.push({
             x: cvs.width,
             y: Math.floor(Math.random() * pipeNorth.height) - pipeNorth.height,
@@ -142,6 +151,7 @@ function draw() {
       ctx.drawImage(bird, bX, bY);
 
       bY += gravity;
+      gravity += 0.008;
 
       ctx.fillStyle = "#000";
       ctx.font = "20px Verdana";
@@ -155,12 +165,13 @@ function draw() {
       }
       break;
     case gameStates.GAMEOVER:
-      ctx.fillStyle = "grey";
-      ctx.fillRect(0, 0, cvs.width, cvs.height);
-      ctx.drawImage(gameOverImg, 50, 170);
+      gameStates.CURRENT=gameStates.GAMEOVER;
+      ctx.drawImage(bg, 0, 0);
+      ctx.drawImage(gameOverImg, 50, 60);
       ctx.fillStyle = "#000";
       ctx.font = "40px Verdana";
       ctx.fillText("Score : " + score, 50, cvs.height - 50);
+      soundOn = false;
       break;
     default:
       console.log("defaulted");
