@@ -43,10 +43,11 @@ fly.src = "sounds/fly.mp3";
 scor.src = "sounds/score.mp3";
 
 // game states and init
-var gameStates = { START: 1, PLAYING: 2, GAMEOVER: 3 ,CURRENT:1};
+var gameStates = { START: 1, PLAYING: 2, GAMEOVER: 3, CURRENT: 0 };
 var gameState = gameStates.START;
 
 var score = 0;
+var highScore = 0;
 var soundOn = false;
 // EVENTS
 
@@ -72,7 +73,17 @@ function enableDisableSound(e) {
 //start button click
 cvs.addEventListener("click", (e) => handleStarBtnClick(e));
 function handleStarBtnClick(e) {
-  if (gameStates.CURRENT==gameStates.START) {
+  if (gameStates.CURRENT != gameStates.PLAYING) {
+    gameStates.CURRENT = gameStates.START;
+    score=0;
+    bY = 150;
+    pipe = [];
+    pipe.push({x:cvs.width,y:0})
+
+    pipe[0] = {
+      x: cvs.width,
+      y: 0,
+    };
     var offsetX = e.x - cvs.offsetLeft;
     var offsetY = e.y - cvs.offsetTop;
     if (
@@ -102,15 +113,16 @@ pipe[0] = {
 function draw() {
   switch (gameState) {
     case gameStates.START:
-      gameStates.CURRENT=gameStates.START;
+      gameStates.CURRENT = gameStates.START;
       ctx.fillStyle = "cyan";
       ctx.fillRect(0, 0, cvs.width, cvs.height);
       ctx.drawImage(bg, 0, 0);
+      ctx.drawImage(gameLogo, 60, 100);
       ctx.drawImage(startButton, 40, 300);
 
       break;
     case gameStates.PLAYING:
-      gameStates.CURRENT=gameStates.PLAYING;
+      gameStates.CURRENT = gameStates.PLAYING;
       ctx.drawImage(bg, 0, 0);
 
       for (var i = 0; i < pipe.length; i++) {
@@ -165,12 +177,18 @@ function draw() {
       }
       break;
     case gameStates.GAMEOVER:
-      gameStates.CURRENT=gameStates.GAMEOVER;
+      gameStates.CURRENT = gameStates.GAMEOVER;
+      if (score > highScore || score == 0) {
+        highScore = score;
+      }
       ctx.drawImage(bg, 0, 0);
       ctx.drawImage(gameOverImg, 50, 60);
+      ctx.drawImage(startButton, 40, 300);
       ctx.fillStyle = "#000";
+      ctx.font = "30px Verdana";
+      ctx.fillText("Score : " + score, 80, cvs.height - 100);
       ctx.font = "40px Verdana";
-      ctx.fillText("Score : " + score, 50, cvs.height - 50);
+      ctx.fillText("Highest : " + highScore, 40, cvs.height - 40);
       soundOn = false;
       break;
     default:
