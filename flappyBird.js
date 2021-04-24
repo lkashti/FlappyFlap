@@ -74,10 +74,6 @@ function enableDisableSound(e) {
 cvs.addEventListener("click", (e) => handleStarBtnClick(e));
 function handleStarBtnClick(e) {
   if (gameStates.CURRENT != gameStates.PLAYING) {
-<<<<<<< HEAD
-    gameStates.CURRENT = gameStates.START;
-=======
->>>>>>> Change to consts and minor fixes
     score = 0;
     bY = 150;
     pipe = [];
@@ -95,11 +91,7 @@ function handleStarBtnClick(e) {
       offsetY > 302 &&
       offsetY < 302 + startButton.height
     ) {
-<<<<<<< HEAD
-      console.log("start");
-=======
       console.log("game starting");
->>>>>>> Change to consts and minor fixes
       gameStates.CURRENT = gameStates.PLAYING;
       soundOn = true;
     }
