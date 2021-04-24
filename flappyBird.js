@@ -3,16 +3,16 @@ var ctx = cvs.getContext("2d");
 
 // load images
 
-var bird = new Image();
-var bg = new Image();
-var fg = new Image();
-var pipeNorth = new Image();
-var pipeSouth = new Image();
-var soundOnIcon = new Image();
-var soundOffIcon = new Image();
-var gameLogo = new Image();
-var startButton = new Image();
-var gameOverImg = new Image();
+const bird = new Image();
+const bg = new Image();
+const fg = new Image();
+const pipeNorth = new Image();
+const pipeSouth = new Image();
+const soundOnIcon = new Image();
+const soundOffIcon = new Image();
+const gameLogo = new Image();
+const startButton = new Image();
+const gameOverImg = new Image();
 
 bird.src = "images/bird.png";
 bg.src = "images/bg.png";
@@ -26,7 +26,7 @@ startButton.src = "images/startButton.png";
 gameOverImg.src = "images/gameOver.png";
 // some variables
 
-var gap = 140;
+const gap = 140;
 var constant;
 
 var bX = 10;
@@ -36,15 +36,15 @@ var gravity = 0.8;
 
 // audio files
 
-var fly = new Audio();
-var scor = new Audio();
+const fly = new Audio();
+const scor = new Audio();
 
 fly.src = "sounds/fly.mp3";
 scor.src = "sounds/score.mp3";
 
 // game states and init
 var gameStates = { START: 1, PLAYING: 2, GAMEOVER: 3, CURRENT: 0 };
-var gameState = gameStates.START;
+gameStates.CURRENT = gameStates.START;
 
 var score = 0;
 var highScore = 0;
@@ -54,8 +54,8 @@ var soundOn = false;
 // on key down
 
 function moveUp() {
-  bY -= 40;
-  gravity = 0.8;
+  bY -= 45;
+  gravity = 0.5;
   if (soundOn) {
     fly.play();
   }
@@ -74,11 +74,14 @@ function enableDisableSound(e) {
 cvs.addEventListener("click", (e) => handleStarBtnClick(e));
 function handleStarBtnClick(e) {
   if (gameStates.CURRENT != gameStates.PLAYING) {
+<<<<<<< HEAD
     gameStates.CURRENT = gameStates.START;
-    score=0;
+=======
+>>>>>>> Change to consts and minor fixes
+    score = 0;
     bY = 150;
     pipe = [];
-    pipe.push({x:cvs.width,y:0})
+    pipe.push({ x: cvs.width, y: 0 });
 
     pipe[0] = {
       x: cvs.width,
@@ -92,8 +95,12 @@ function handleStarBtnClick(e) {
       offsetY > 302 &&
       offsetY < 302 + startButton.height
     ) {
+<<<<<<< HEAD
       console.log("start");
-      gameState = gameStates.PLAYING;
+=======
+      console.log("game starting");
+>>>>>>> Change to consts and minor fixes
+      gameStates.CURRENT = gameStates.PLAYING;
       soundOn = true;
     }
   }
@@ -111,7 +118,7 @@ pipe[0] = {
 // draw images
 
 function draw() {
-  switch (gameState) {
+  switch (gameStates.CURRENT) {
     case gameStates.START:
       gameStates.CURRENT = gameStates.START;
       ctx.fillStyle = "cyan";
@@ -149,7 +156,7 @@ function draw() {
           bY + bird.height >= cvs.height - fg.height
         ) {
           //game over
-          gameState = gameStates.GAMEOVER;
+          gameStates.CURRENT = gameStates.GAMEOVER;
         }
 
         if (pipe[i].x == 5) {
@@ -163,6 +170,7 @@ function draw() {
       ctx.drawImage(bird, bX, bY);
 
       bY += gravity;
+      // create acceleration
       gravity += 0.008;
 
       ctx.fillStyle = "#000";
@@ -178,17 +186,18 @@ function draw() {
       break;
     case gameStates.GAMEOVER:
       gameStates.CURRENT = gameStates.GAMEOVER;
-      if (score > highScore || score == 0) {
+      if (score > highScore) {
         highScore = score;
       }
       ctx.drawImage(bg, 0, 0);
-      ctx.drawImage(gameOverImg, 50, 60);
+      ctx.drawImage(gameOverImg, 50,30);
+      ctx.fillText("PLAY AGAIN?", 15,260);
       ctx.drawImage(startButton, 40, 300);
       ctx.fillStyle = "#000";
       ctx.font = "30px Verdana";
-      ctx.fillText("Score : " + score, 80, cvs.height - 100);
+      ctx.fillText("SCORE: " + score, 80, cvs.height - 100);
       ctx.font = "40px Verdana";
-      ctx.fillText("Highest : " + highScore, 40, cvs.height - 40);
+      ctx.fillText("BEST: " + highScore, 80, cvs.height - 40);
       soundOn = false;
       break;
     default:
